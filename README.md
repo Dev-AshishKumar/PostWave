@@ -23,11 +23,16 @@ In a world flooded with information, PostWave stands out by offering a platform 
 
 ## 📲 Join Us Today!
 
+### Welcome 
+![welcomePage](https://github.com/Dev-AshishKumar/PostWave/blob/main/public/assets/Welcome.png)
+
+### Homepage 
+![welcomePage](https://github.com/Dev-AshishKumar/PostWave/blob/main/public/assets/Home%20Page.png)
+
+### Create Post 
+![welcomePage](https://github.com/Dev-AshishKumar/PostWave/blob/main/public/assets/Add%20Post%20Page.png)
+
 Don't miss out on the opportunity to be a part of the PostWave community. Sign up today, create your first post, and start sharing your ideas with the world!
 
----
 
-Stay connected and follow our journey on [social media links, if any].
-
-For any questions, feel free to reach out to our [support team/contact link].
 
