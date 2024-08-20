@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, Input, Select, RTE } from "../index";
 import appwriteService from "../../appwrite/appwriteConfig";
+import { toast } from "sonner";
 
 export default function PostForm({ post }) {
   const [showModal, setShowModal] = useState(false);
@@ -20,11 +21,6 @@ export default function PostForm({ post }) {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
   const submit = async (data) => {
-    if (!userData || !userData.$id) {
-      console.error("User data is not available");
-      return;
-    }
-
     try {
       if (post) {
         const file = data.image[0]
@@ -41,6 +37,7 @@ export default function PostForm({ post }) {
         });
 
         if (dbPost) {
+          toast.success("Post updated successfully");
           navigate(`/post/${dbPost.$id}`);
         }
       } else {
@@ -56,9 +53,11 @@ export default function PostForm({ post }) {
           });
 
           if (dbPost) {
+            toast.success("Post created successfully");
             navigate(`/post/${dbPost.$id}`);
           }
         } else {
+          toast.error("Something went wrong! Please Read Guidelines");
           console.error("File upload failed");
           return;
         }

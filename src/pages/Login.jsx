@@ -5,35 +5,26 @@ import { useDispatch } from "react-redux";
 import { Button, Input } from "../components/index";
 import authServices from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit, setValue } = useForm();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const login = async (data) => {
-    setError("");
-    setLoading(true);
     try {
       const session = await authServices.login(data);
       if (session) {
         const currentUser = await authServices.getCurrentUser();
         if (currentUser) {
           dispatch(authLogin({ userData: currentUser }));
+          toast.success("Logged in successfully");
           navigate("/");
-        } else {
-          setError("Failed to retrieve user data. Please try again.");
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setError(
-        "Failed to login. Please check your credentials or try again later."
-      );
-    } finally {
-      setLoading(false);
+      toast.error(error.message || "Wrong credentials");
     }
   };
 
@@ -51,7 +42,6 @@ const Login = () => {
 
         <h2 className="text-xl text-center mb-6">Login to your account</h2>
 
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
         <form onSubmit={handleSubmit(login)}>
           <div className="space-y-5">
             <Input

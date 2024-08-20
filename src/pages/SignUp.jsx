@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import authServices from "../appwrite/auth";
 import { login } from "../store/authSlice";
 import { Button, Input } from "../components/index";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -15,10 +16,11 @@ const SignUp = () => {
   const create = async (data) => {
     setError("");
     try {
-      const createUserData = await authServices.createAccount(data);
-      if (createUserData) {
+      const userData = await authServices.createAccount(data);
+      if (userData) {
         const userData = await authServices.getCurrentUser();
         if (userData) dispatch(login(userData));
+        toast.success("Account Created successfully");
         navigate("/");
       }
     } catch (error) {
@@ -40,7 +42,6 @@ const SignUp = () => {
           <div className="space-y-5">
             <Input
               label="Full Name: "
-              type="text"
               placeholder="Enter your name"
               {...register("name", { required: true })}
             />
