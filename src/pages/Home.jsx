@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import appwriteService from "../appwrite/appwriteConfig";
 import { Container, PostCard } from "../components/index";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -36,9 +37,9 @@ const Home = () => {
           Start Your Journey
         </h4>
         <p className="text-center text-gray-400 max-sm:text-sm  max-sm:px-2">
-          Ready to make waves? Dive in and start sharing your thoughts today.
-          Create an account, write your first post, and join a community of
-          thinkers, dreamers, and doers.
+          Dive in and start sharing your thoughts today. <Link className="text-yellow-400" to={"/login"}>Login</Link> &nbsp;or&nbsp;
+          <Link className="text-yellow-400"  to={"/signup"}>Create an Account</Link> to write your first post and join a
+          community of thinkers, dreamers, and doers.
         </p>
       </div>
     );
