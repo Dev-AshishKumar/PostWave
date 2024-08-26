@@ -2,18 +2,20 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
-import { Button, Input } from "../components/index";
+import { Button, Input, Loader } from "../components/index";
 import authServices from "../appwrite/auth";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const Login = () => {
+  const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit, setValue } = useForm();
 
   const login = async (data) => {
     try {
+      setLoader(true);
       const session = await authServices.login(data);
       if (session) {
         const currentUser = await authServices.getCurrentUser();
@@ -25,6 +27,8 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.message || "Wrong credentials");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -65,9 +69,16 @@ const Login = () => {
                 required: true,
               })}
             />
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
+
+            {loader ? (
+              <Button type="submit" className="w-full">
+                <Loader className={`h-fit justify-center w-48 m-auto`} />
+              </Button>
+            ) : (
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+            )}
           </div>
         </form>
 

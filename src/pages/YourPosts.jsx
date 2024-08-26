@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Container, PostCard } from "../components/index";
 import appwriteService from "../appwrite/appwriteConfig";
+import { Button } from "../components/index";
+import { Link } from "react-router-dom";
+import { Loader } from "../components/index";
 
 const YourPosts = () => {
   const [posts, setPosts] = useState([]);
+  const [loader, setLoader] = useState(true);
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
@@ -16,6 +20,8 @@ const YourPosts = () => {
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -23,6 +29,14 @@ const YourPosts = () => {
   }, []);
 
   const filteredPosts = posts.filter((post) => post.userId === userData.$id);
+
+  if (loader) {
+    return (
+      <div className="w-full h-[80vh] flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full py-8">
@@ -38,11 +52,13 @@ const YourPosts = () => {
               </div>
             ))
           ) : (
-            <div className="flex justify-center items-center w-full h-[400px]">
-              <p className="text-center text-yellow-400 text-2xl">
-                Posts are currently loading, or it looks like you haven't
-                created any yet. Go ahead and create your first post!
+            <div className="flex flex-col gap-4 max-md:gap-2 justify-center text-center px-2 items-center w-full h-[400px] ">
+              <p className="text-2xl max-md:text-xl">
+                Get started by creating your first post now!
               </p>
+              <Link to={"/add-post"}>
+                <Button className="w-24 font-semibold px-2">Add Post</Button>
+              </Link>
             </div>
           )}
         </div>

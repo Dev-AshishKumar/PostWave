@@ -11,6 +11,7 @@ import PostForm from "./PostForm/PostForm";
 import LogoutBtn from "./header/LogoutBtn";
 import Container from "./container/Container";
 import AuthLayout from "../components/AuthLayout";
+import Loader from "./Loader";
 
 export {
   RTE,
@@ -26,4 +27,5 @@ export {
   LogoutBtn,
   Container,
   AuthLayout,
+  Loader,
 };

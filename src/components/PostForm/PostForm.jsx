@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button, Input, Select, RTE } from "../index";
+import { Button, Input, Select, RTE, Loader } from "../index";
 import appwriteService from "../../appwrite/appwriteConfig";
 import { toast } from "sonner";
 
 export default function PostForm({ post }) {
   const [showModal, setShowModal] = useState(false);
+  const [loader, setLoader] = useState(false);
   const { register, handleSubmit, control, watch, setValue, getValues } =
     useForm({
       defaultValues: {
@@ -22,6 +23,7 @@ export default function PostForm({ post }) {
   const userData = useSelector((state) => state.auth.userData);
   const submit = async (data) => {
     try {
+      setLoader(true);
       if (post) {
         const file = data.image[0]
           ? await appwriteService.updateFile(data.image[0])
@@ -40,7 +42,9 @@ export default function PostForm({ post }) {
           toast.success("Post updated successfully");
           navigate(`/post/${dbPost.$id}`);
         }
+        setLoader(false);
       } else {
+        setLoader(true);
         const file = await appwriteService.uploadFile(data.image[0]);
 
         if (file) {
@@ -56,6 +60,7 @@ export default function PostForm({ post }) {
             toast.success("Post created successfully");
             navigate(`/post/${dbPost.$id}`);
           }
+          setLoader(false);
         } else {
           toast.error("Something went wrong! Please Read Guidelines");
           console.error("File upload failed");
@@ -168,12 +173,18 @@ export default function PostForm({ post }) {
           >
             Read Guidelines
           </button>
-          <Button
-            type="submit"
-            className="w-fit p-2 text-lg font-semibold transition-colors hover:bg-opacity-90"
-          >
-            {post ? "Update Post" : "Create Post"}
-          </Button>
+          {loader ? (
+            <Button type="submit" className="w-full">
+              <Loader className={`h-fit justify-center w-48 m-auto`} />
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="w-fit p-2 text-lg font-semibold transition-colors hover:bg-opacity-90"
+            >
+              {post ? "Update Post" : "Create Post"}
+            </Button>
+          )}
         </div>
       </div>
       {/* Modal */}
