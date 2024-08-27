@@ -88,13 +88,13 @@ const YourPosts = () => {
         {/* Pagination Part */}
         {filteredPosts.length > postPerPage && (
           <div className="flex gap-4 justify-center mx-6 mt-6 max-sm:text-xs max-sm:gap-0 max-sm:mx-1">
-            <Button
+            <button
               onClick={handlePrevious}
               disabled={page === 1}
-              className="w-28 py-0 max-sm:w-24 max-sm:px-1"
+              className="w-28 py-0 bg-yellow-600 hover:bg-yellow-800 text-white rounded max-sm:w-14 max-sm:px-1"
             >
               Previous
-            </Button>
+            </button>
 
             {[...Array(totalPages).keys()].map((pageNumber) => {
               if (
@@ -131,13 +131,13 @@ const YourPosts = () => {
               return null;
             })}
 
-            <Button
+            <button
               onClick={handleNext}
               disabled={page * 12 >= posts.length}
-              className="w-28 py-0 max-sm:w-24 max-sm:px-1"
+              className="w-28 py-0 bg-yellow-600 hover:bg-yellow-800 text-white rounded max-sm:w-14 max-sm:px-1"
             >
               Next
-            </Button>
+            </button>
           </div>
         )}
       </Container>
