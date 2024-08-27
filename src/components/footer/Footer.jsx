@@ -20,7 +20,7 @@ const Footer = () => {
               <Link href="#" className="hover:text-yellow-300">
                 <i className="fab fa-twitter"></i>
               </Link>
-              <Link href="#" className="hover:text-yellow-300">
+              <Link to="https://github.com/Dev-AshishKumar" className="hover:text-yellow-300">
                 <i className="fab fa-github"></i>
               </Link>
             </div>
@@ -35,8 +35,8 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-yellow-300">
-                    Articles
+                  <Link to={"/"} className="hover:text-yellow-300">
+                    Posts
                   </Link>
                 </li>
                 <li>

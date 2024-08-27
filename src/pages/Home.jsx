@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import appwriteService from "../appwrite/appwriteConfig";
-import { Container, PostCard } from "../components/index";
+import { Button, Container, PostCard } from "../components/index";
 import { Link } from "react-router-dom";
 import { Loader } from "../components/index";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loader, setLoader] = useState(true);
+  const [page, setPage] = useState(1);
+  const postPerPage = 12;
 
   useEffect(() => {
     const fetchingPosts = async () => {
       try {
         const response = await appwriteService.getAllPosts();
         if (response) {
-          setPosts(response.documents);
+          setPosts(response.documents.reverse());
         }
       } catch (error) {
         console.log(error);
@@ -23,6 +25,24 @@ const Home = () => {
     };
     fetchingPosts();
   }, []);
+
+  const handleNext = () => {
+    if (page * postPerPage < posts.length) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setPage(pageNumber);
+  };
+
+  const totalPages = Math.ceil(posts.length / postPerPage);
 
   if (loader) {
     return (
@@ -72,15 +92,75 @@ const Home = () => {
         <div className="w-full py-8">
           <Container>
             <div className="flex flex-wrap ">
-              {posts.map((post) => (
-                <div
-                  key={post.$id}
-                  className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                >
-                  <PostCard {...post} />
-                </div>
-              ))}
+              {posts
+                .slice((page - 1) * postPerPage, page * postPerPage)
+                .map((post) => (
+                  <div
+                    key={post.$id}
+                    className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                  >
+                    <PostCard {...post} />
+                  </div>
+                ))}
             </div>
+
+            {/* Pagination Part */}
+            {posts.length > postPerPage && (
+              <div className="flex gap-4 justify-center mx-6 mt-6 max-sm:text-xs max-sm:gap-0 max-sm:mx-1">
+                <Button
+                  onClick={handlePrevious}
+                  disabled={page === 1}
+                  className="w-28 py-0 max-sm:w-24 max-sm:px-1"
+                >
+                  Previous
+                </Button>
+
+                {[...Array(totalPages).keys()].map((pageNumber) => {
+                  if (
+                    pageNumber + 1 === 1 ||
+                    pageNumber + 1 === 2 ||
+                    pageNumber + 1 === totalPages ||
+                    pageNumber + 1 === totalPages - 1 ||
+                    (pageNumber + 1 >= page - 1 && pageNumber + 1 <= page + 1)
+                  ) {
+                    return (
+                      <button
+                        key={pageNumber + 1}
+                        onClick={() => handlePageClick(pageNumber + 1)}
+                        className={`mx-1 px-3 py-1 text-white rounded font-bold ${
+                          page === pageNumber + 1
+                            ? "bg-yellow-400"
+                            : "bg-gray-800"
+                        }`}
+                      >
+                        {pageNumber + 1}
+                      </button>
+                    );
+                  }
+
+                  if (
+                    (pageNumber + 1 === page - 2 && page > 3) ||
+                    (pageNumber + 1 === page + 2 && page < totalPages - 2)
+                  ) {
+                    return (
+                      <span key={pageNumber + 1} className="mx-2 text-white">
+                        ...
+                      </span>
+                    );
+                  }
+
+                  return null;
+                })}
+
+                <Button
+                  onClick={handleNext}
+                  disabled={page * 12 >= posts.length}
+                  className="w-28 py-0 max-sm:w-24 max-sm:px-1"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </Container>
         </div>
       )}

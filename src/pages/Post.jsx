@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../appwrite/appwriteConfig";
-import { Button, Container } from "../components/index";
+import { Loader, Container } from "../components/index";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 
@@ -9,18 +9,32 @@ export default function Post() {
   const [post, setPost] = useState(null);
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(true);
 
   const userData = useSelector((state) => state.auth.userData);
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
   useEffect(() => {
-    if (slug) {
-      appwriteService.getPost(slug).then((post) => {
-        if (post) setPost(post);
-        else navigate("/");
-      });
-    } else navigate("/");
+    const fetchPost = async () => {
+      try {
+        if (slug) {
+          const response = await appwriteService.getPost(slug);
+          if (response) {
+            setPost(response);
+          } else {
+            navigate("/");
+          }
+        } else {
+          navigate("/");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoader(false);
+      }
+    };
+    fetchPost();
   }, [slug, navigate]);
 
   const deletePost = () => {
@@ -31,7 +45,13 @@ export default function Post() {
       }
     });
   };
-
+  if (loader) {
+    return (
+      <div className="w-full h-[80vh] flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
   return post ? (
     <div className="py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
       <Container>

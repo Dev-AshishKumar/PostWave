@@ -10,13 +10,14 @@ import { toast } from "sonner";
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
 
   const create = async (data) => {
     setError("");
     try {
+      setLoader(true);
       const userData = await authServices.createAccount(data);
       if (userData) {
         const userData = await authServices.getCurrentUser();
